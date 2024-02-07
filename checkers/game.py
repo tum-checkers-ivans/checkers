@@ -279,7 +279,7 @@ class Game:
         # convert the current state, action, reward, and next state to tensors
         state = torch.tensor([self.__get_flattened_state()], dtype=torch.float32)
         action = torch.tensor([self.__selected_action()], dtype=torch.long)
-        reward = torch.tensor([self.__calculate_reward()], dtype=torch.float32)
+        reward = torch.tensor([self.__total_model_reward], dtype=torch.float32)
         next_state = torch.tensor([self.__get_flattened_state()], dtype=torch.float32)
 
         experience = Experience(state, action, reward, next_state)
@@ -425,9 +425,10 @@ class Game:
         )
 
         for move in optimal_moves_list:
+            self.__handle_move(move)
+            self.__calculate_reward()
             print(f"Move: {move} | Reward: {self.__total_model_reward}")
             logging.info(f"Move: {move} | Reward: {self.__total_model_reward}")
-            self.__handle_move(move)
 
         self.__player_turn = True
 

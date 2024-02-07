@@ -14,6 +14,7 @@ class DQN(nn.Module):
             output_size (int): The size of the output tensor.
         """
         super(DQN, self).__init__()
+        # Layers
         self.fc = nn.Linear(input_size, 128)
         self.fc2 = nn.Linear(128, output_size)
 
@@ -27,8 +28,8 @@ class DQN(nn.Module):
         Returns:
             The output tensor.
         """
-        x = torch.relu(self.fc(x))
-        x = self.fc2(x)
+        x = torch.relu(self.fc(x))  # Q(s, left)
+        x = self.fc2(x)  # Q(s, right)
         return x
 
 
@@ -112,6 +113,7 @@ def train_dqn(dqn, replay_buffer, batch_size, gamma, optimizer):
 
     target_q_values = reward_batch + gamma * next_q_values  # calculate target Q-values
 
+    # Mean Squared Error between each element in the input X and target Y
     loss = nn.MSELoss()(
         current_q_values.gather(
             dim=1, index=action_batch.unsqueeze(dim=1)
